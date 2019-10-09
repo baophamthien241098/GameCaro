@@ -72,7 +72,7 @@ class Board extends React.Component {
             </div>
             <div className="d-flex justify-content-between">
               <h4 className="m-1 ">Lịch sử đánh</h4>
-              <select value={this.props.XapXep} onChange={(e) => this.props.clickSort(e.target.value)}>
+              <select defaultValue={this.props.XapXep} onChange={(e) => this.props.clickSort(e.target.value)}>
                 <option value="tangdan" selected>
                   Tăng dần
                 </option>
