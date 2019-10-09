@@ -1,0 +1,83 @@
+
+  .ChooseLi{
+    background: rgb(30, 130, 224);
+  }
+  li{
+    padding: 2px;
+    margin-top: 2px;
+  }
+  li:hover{
+    background: rgb(33, 46, 49);
+  }
+  
+  .card{
+    width: 18rem;
+  }
+  .status {
+    margin-bottom: 10px;
+  }
+  .ContainerGame{
+    width:900px;
+    display: flex;
+    flex-direction: row;
+    height: 600px;
+    overflow: hidden;
+  }
+  
+  .board{
+    width:600px;
+    height: 600px;
+    margin-bottom: 0px;
+  }
+  .Menu{
+    width:300px;
+    height: 600px;
+  }
+  .square {
+    background: #fff;
+    border: 1px solid black;
+    color: red;
+    float: left;
+    font-size: 20px;
+    font-weight: bold;
+    height: 30px;
+    margin-right: -1px;
+    margin-top: 0px;
+    padding: 0;
+    text-align: center;
+    width: 30px;
+  }
+  .squareCheck {
+    background: rgb(223, 202, 15);
+    border: 1px solid black;
+    color: red;
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    height: 30px;
+    margin-right: -1px;
+    margin-top: 0px;
+    padding: 0;
+    text-align: center;
+    width: 30px;
+  }
+  
+  .square:hover{
+    background: rgb(26, 221, 228);
+  }
+  .History{
+   
+    height: 370px;
+    width: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+  
+  .square:focus {
+    outline: none;
+  }
+  
+  .kbd-navigation .square:focus {
+    background: #ddd;
+  }
+  
