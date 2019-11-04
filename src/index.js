@@ -4,16 +4,23 @@
 /* eslint-disable react/button-has-type */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable radix */
-import { createStore} from 'redux';
+import { createStore,applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
+import thunk from 'redux-thunk';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import App from './App'
 import Board from './containers/board/Board';
+
 import reducer from './store/reducer/reducer';
 
-const store = createStore(reducer);
-ReactDOM.render(<Provider store = {store}><Board /></Provider>, document.getElementById('root'));
+
+ const store = createStore(reducer,applyMiddleware(thunk));
+ 
+ReactDOM.render(<Provider store = {store}><App />
+</Provider> 
+    ,document.getElementById('root'));
 
 
