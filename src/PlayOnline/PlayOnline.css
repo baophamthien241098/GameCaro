@@ -16,25 +16,27 @@
   .status {
     margin-bottom: 10px;
   }
-  .ContainerGame{
+  .ContainerGame2{
+ 
     width:1400px;
     display: flex;
     flex-direction: row;
-    height: 600px;
+    height: 610px;
     overflow: hidden;
     margin: auto;
   }
   
-  .board{
+  .board2{
+  
     width:600px;
     height: 600px;
     margin-bottom: 0px;
    
   }
-  .Menu{
+  .Menu2{
    
     width:400px;
-    height: 600px;
+    height: 610px;
   }
   .square {
     background: #fff;
@@ -76,8 +78,8 @@
     overflow-y: scroll;
   }
   .ChatBox{
-   
-    height: 70px;
+    
+    height: 50px;
     width: auto;
    
 
@@ -113,6 +115,7 @@ img{ max-width:100%;}
   text-align: right;
   width: 60%; padding:
 }
+
 .headind_srch{ padding:10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #c4c4c4;}
 
 .recent_heading h4 {

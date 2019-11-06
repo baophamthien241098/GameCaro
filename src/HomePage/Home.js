@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 const Home = props => {
-  const { user,handleLogOut,RequireSocket} = props;
+  const { user,handleLogOut,RequireSocket,socket} = props;
   const history = useHistory();
   if (JSON.parse(localStorage.getItem('token')) === null) {
     history.push('/login');
@@ -24,7 +24,14 @@ const Home = props => {
   }
   const PlayVsOnline = (event) =>{
     event.preventDefault()
-    RequireSocket()
+    console.log("PlayVsOnline");
+    if(socket === null || typeof socket === "undefined"){
+      console.log("Require new socket");
+      RequireSocket()
+    }else{
+      console.log("------------------- connection_again -------------------");
+      socket.emit("connection_again")
+    }
     history.push("/TestConnect")
   }
 

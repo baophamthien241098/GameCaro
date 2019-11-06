@@ -6,8 +6,12 @@ const init = null;
 const reducer = (state = init, action) => {
   switch (action.type) {
     case actionTypes.REQUIRE_SOCKET: { 
-    const  socket = io('localhost:8080');
+      //https://server-game-caro.herokuapp.com
+    const  socket = io('http://localhost:8080');
       return socket;
+    }
+    case actionTypes.RESET_SOCKET:{
+      return null;
     }
 
     default:

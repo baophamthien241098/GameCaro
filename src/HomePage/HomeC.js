@@ -16,17 +16,18 @@ export class HomeC extends React.Component {
     }
    
     render() {
-      const { user,LogOut,RequireSocket } = this.props;
+      const { user,LogOut,RequireSocket,socket } = this.props;
       return (
         <div>
-          <Home user={user} handleLogOut ={LogOut} RequireSocket={RequireSocket} />
+          <Home socket={socket} user={user} handleLogOut ={LogOut} RequireSocket={RequireSocket} />
         </div>
       );
     }
   }
   
 const mapStateToProps = state => ({
-    user: state.user
+    user: state.user,
+    socket:state.socket
   });
   const MapDisPathToProps = dispatch =>{
       return {

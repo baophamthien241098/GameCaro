@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 /* eslint-disable no-console */
 /* eslint-disable prefer-template */
 /* eslint-disable react/destructuring-assignment */
@@ -9,43 +10,56 @@ import { connect } from 'react-redux';
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Modal,Button,Image } from 'react-bootstrap';
-import './Board.css';
+import './PlayOnline.css';
 import Square from '../components/square/Square';
 import * as actionTypes from '../store/actions/actions';
 
 const PlayOnline = props => {
   const history = useHistory();
+  const { squares, IsFinish,YourTurn, ListHistory,IsWin,
+          ChooseHistory,  XapXep, ChatMessages,
+          PopMenu,IsUndo,  XinHoa, DaHoa, Disconnect, message,LuotDanh} = props;
   const {
     user,
-    IsFinish,
     socket,
     playerDoiThu,
-    squares,
     handleClick,
-    XapXep,
     clickSort,
-    ListHistory,
     clickUndo,
-    IsUndo,
-    ChatMessages,
     handlesendmessage,
-    message,
     savemess,
     responsemessage,
-    YourTurn,
-    IsWin,
-    ChooseHistory,
     responsefinish,
     hirepop,
-    PopMenu,
     requireundo,
     handleundo,
     surrender,
-    XinHoa,
     handleXinHoa,
     handleHoaOrKhong,
+    handledisconnect,
+    resetsocket,
+    resetstate
   } = props;
-
+    const SaveData = {
+     
+      IsFinish: IsFinish,
+      YourTurn: YourTurn, 
+      ListHistory: ListHistory,
+      IsWin: IsWin,
+      ChooseHistory: ChooseHistory,
+      XapXep: XapXep,
+      ChatMessages:  ChatMessages,
+      PopMenu: PopMenu,
+      IsUndo: IsUndo,
+      XinHoa:  XinHoa,
+      DaHoa:  DaHoa, 
+      Disconnect:  Disconnect,
+      message:   message,
+      playerDoiThu:playerDoiThu,
+      LuotDanh:LuotDanh
+    }
+  
+    localStorage.setItem('laststate',JSON.stringify(SaveData));
   const handleChangeMsg = event => {
     handlesendmessage(event.target.value);
   };
@@ -57,13 +71,13 @@ const PlayOnline = props => {
     socket.emit("sent_undo",false)
     handleundo(false)
   }
-  
-  console.log("XinHoa = ",XinHoa);
-  
   const GetDate = () => {
     const today = new Date();
     return today.getHours() + ':' + today.getMinutes();
   };
+  const Remove =()=>{
+    socket.removeListener("chat_2_clients")
+  }
   const HandleChat = () => {
     socket.emit('chat_message', message);
     const info = {
@@ -76,7 +90,12 @@ const PlayOnline = props => {
     handlesendmessage('');
   };
   useEffect(() => {
+    localStorage.setItem('laststate',JSON.stringify(SaveData));
     socket.on('chat_2_clients', data => {
+      console.log("CHAT CHAT CHAT");
+      console.log(playerDoiThu.IdSocketDoiThu);
+      
+      
       const info = {
         mes: data,
         IsComming: true,
@@ -101,17 +120,33 @@ const PlayOnline = props => {
     });
     socket.on('Response_Surrender', () => {
       surrender(false)
-        });
-        
-  socket.on('Response_XinHoa', () => {
+    });
+    socket.on('ready_toplay',(value) =>{
+      console.log("ready_toplay id = ",value);
+      
+          handledisconnect(false)
+    })  
+    socket.on('Response_XinHoa', () => {
         console.log("Response_XinHoa = ");
         handleXinHoa()
-      });
-      socket.on('Response_HoaOrKhong', (value) => {
+    });
+    socket.on('Response_HoaOrKhong', (value) => {
         handleHoaOrKhong(value)
-  });
+    });
+    socket.on('disconnect_room', () => {
+      console.log("disconnect_room = ");
+      console.log("playerDoiThu dau tien = ",playerDoiThu);
+      handledisconnect(true)
+      console.log("playerDoiThu dau tien = ",playerDoiThu);
+    });
   }, []);
   const handleBack = () => {
+    resetstate()
+    Remove()
+   // resetsocket()
+    localStorage.removeItem("laststate")
+    localStorage.removeItem("lastroom")
+    socket.emit("disconnect_game","x")
     history.push('/');
   };
 
@@ -123,8 +158,8 @@ const PlayOnline = props => {
   const pStyle = {
     width: '100px',
     height: '100px'
-  };
-  const ClickSquare = value => {
+  };  
+ const ClickSquare = value => {
     console.log("Click square =  ",YourTurn);
     if (YourTurn) {
       handleClick(value);
@@ -154,11 +189,23 @@ const PlayOnline = props => {
     handleHoaOrKhong(false)
     socket.emit('handle_Hoa',false);
   }
+  const handleHuyCho = ()=>{
+    socket.emit('huycho',true);
+    localStorage.removeItem("laststate")
+    localStorage.removeItem("lastroom")
+    Remove()
+    resetstate()
+    history.push("/")
+  }
   const matrixSize = 20;
   const rows = Array(matrixSize).fill(null);
   const cols = rows;
   const HandleClose = ()=>{
     hirepop()
+  }
+  const handleThoatHoa = ()=>{
+    
+    handleHoaOrKhong(false)
   }
   const board = rows.map((row, i) => {
     const squares1 = cols.map((col, j) => {
@@ -206,15 +253,14 @@ const PlayOnline = props => {
           <div className="d-flex justify-content-center ">
             <button
               onClick={handleBack}
-              className=" p-2 mt-3 text-light font-weight-bold  bg-danger"
-            >
-              BACK MENU
+              className=" p-2 mt-3 text-light font-weight-bold  bg-danger">
+              THOÁT
             </button>
           </div>
         </div>
       </div>
-      <div className="ContainerGame  bg-dark ">
-        <div className="Menu mr-2 ">
+      <div className="ContainerGame2  bg-dark ">
+        <div className="Menu2 mr-2 ">
           <div className="d-flex justify-content-center">
             <h3 className=" mr-2 p-1 text-light  font-weight-bold ">
               {playerDoiThu.username}
@@ -256,12 +302,27 @@ const PlayOnline = props => {
               )}
             </div>
           </div>
-          <div className="row ChatBox">
-            <div className="col-md-8">
+          <div className="ChatBox">
+                  {/* <input name="msgtext"  onChange={handleChangeMsg}  value={message} type="text" className="form-control"/>
+                        <button
+                    onClick={HandleChat}
+                    className="btn-success btn font-weight-bold text-light mb-2"
+                  > Send</button> */}
+                  <div className="input-group mb-3">
+                  
+                  <input name="msgtext"  onChange={handleChangeMsg} value={message} type="text" className="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"/>
+                  <div className="input-group-prepend">
+                    <button onClick={HandleChat} className=" btn-success btn font-weight-bold text-light" >Send</button>
+                  </div>
+            </div>
+            </div>
+         
+          {/* <div className="form-inline ChatBox">
+            <div className="">
               <textarea
                 name="msgtext"
                 onChange={handleChangeMsg}
-                maxLength="100"
+                maxLength="70"
                 rows="4"
                 cols="40"
                 value={message}
@@ -269,15 +330,13 @@ const PlayOnline = props => {
             </div>
             <button
               onClick={HandleChat}
-              className="col-md-3 ml-4  btn-success btn  "
-            >
-              <p className="mb-4 font-weight-bold text-light ">Send</p>
-            </button>
-          </div>
+              className="btn-success btn font-weight-bold text-light mb-2"
+            > Send</button>
+          </div> */}
         </div>
 
-        <div className="board">{board}</div>
-        <div className="Menu ">
+        <div className="board2">{board}</div>
+        <div className="Menu2 ">
           <div className="d-flex justify-content-center">
             <h3 className=" mr-2 p-1 font-weight-bold text-light ">
               {user.username}
@@ -311,7 +370,6 @@ const PlayOnline = props => {
               <option value="tangdan" selected>
                 Tăng dần
               </option>
-              <option value="giamdan">Giảm dần</option>
             </select>
           </div>
 
@@ -328,6 +386,56 @@ const PlayOnline = props => {
           </div>
         </div>
       </div>
+      <Modal show={Disconnect}>
+        <Modal.Header >
+        <Modal.Title variant="success" >Mất kết nối! Chờ đối thủ kết nối lại</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div className="d-flex  justify-content-center">
+              <div className="d-block p-2">
+              <div className="spinner-grow text-primary" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+              <div className="spinner-grow text-secondary" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+              <div className="spinner-grow text-success" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+              <div className="spinner-grow text-danger" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+              <div className="spinner-grow text-warning" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+              <div className="spinner-grow text-info" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+              <div className="spinner-grow text-light" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+              <div className="spinner-grow text-dark" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+              </div>
+               </div>       
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleHuyCho} >
+            Hủy đợi
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={DaHoa}>
+        <Modal.Header closeButton>
+        <Modal.Title variant="success" >Kết quả hòa</Modal.Title>
+        </Modal.Header>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleThoatHoa} >
+            Đồng ý
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Modal show={IsUndo}>
         <Modal.Header closeButton>
         <Modal.Title variant="success" > Đối thủ xin đi lại </Modal.Title>
@@ -398,6 +506,7 @@ const mapSateToProps = state => {
     IsUndo:state.gameonline.IsUndo,
     XinHoa:state.gameonline.XinHoa,
     DaHoa:state.gameonline.DaHoa,
+    Disconnect:state.gameonline.Disconnect,
   };
 };
 const mapDispathToProps = dispatch => {
@@ -417,6 +526,9 @@ const mapDispathToProps = dispatch => {
     surrender:(value)=> dispatch(actionTypes.surrender(value)),
     handleXinHoa:()=> dispatch(actionTypes.xinhoa()),
     handleHoaOrKhong: (value) =>dispatch(actionTypes.handleHoa(value)),
+    handledisconnect: (value) =>dispatch(actionTypes.disconnect(value)),
+    resetstate: () =>dispatch(actionTypes.resetstate()),
+    resetsocket: () =>dispatch(actionTypes.resetsocket()),
     
   };
 };

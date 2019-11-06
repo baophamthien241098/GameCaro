@@ -13,7 +13,9 @@ const initialState = {
   User:'Player',
   ImageTurn: Tich,
   Player: 'X',
-  XapXep: 'tangdan'
+  XapXep: 'tangdan',
+  IsWin:false,
+  ShowPop:false,
 };
 function CheckCheoTrai(squares, value, idx) {
     const arr = [];
@@ -283,10 +285,7 @@ const reducer = (state = initialState, action) => {
       Choose.forEach(item => {
         square[item.ViTri] = item.player;
       });
-      let PlayerNext = 'X';
-      if (temp.player === 'X') {
-        PlayerNext = 'Y';
-      }
+      
       return {
         ... state,
         ListHistory:historyL,
@@ -350,6 +349,9 @@ const reducer = (state = initialState, action) => {
         } 
           handle.IsFinish =  true;
           handle.ChooseHistory =  check;
+          handle.IsWin =  true;
+          handle.ShowPop =  true;
+          
           //window.alert(squaresImp[i] + ' win ! ');
           return handle;
         }
@@ -401,6 +403,8 @@ const reducer = (state = initialState, action) => {
         if (checkPC != null){
           handle.IsFinish =  true;
           handle.ChooseHistory =  check;
+          handle.IsWin =  false;
+          handle.ShowPop =  true;
          // window.alert(squaresImp[i] + ' win ! ');
         }
        return handle;
@@ -440,6 +444,12 @@ const reducer = (state = initialState, action) => {
             XapXep: sortv,
 
         }
+    }
+    case actionTypes.HIRE_POPMENUPC:{
+      return {
+        ... state,
+        ShowPop:false,
+      }
     }
     case actionTypes.UNDO_CLICK:{
       
@@ -507,6 +517,8 @@ const reducer = (state = initialState, action) => {
         if (checkPC != null){
           handle.IsFinish =  true;
           handle.ChooseHistory =  checkPC;
+          handle.IsWin = false;
+          handle.ShowPop =  true;
          // window.alert(square[pc] + ' win ! ');
         }
        return handle;

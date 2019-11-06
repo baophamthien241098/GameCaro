@@ -6,6 +6,7 @@
 /* eslint-disable radix */
 import { connect } from 'react-redux';
 import React from 'react';
+import { Modal,Button,Image } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import './Board.css';
 import Square from '../../components/square/Square';
@@ -19,7 +20,9 @@ const Board = props => {
     ChooseHistory,
     handleClick,
     clickRestart,
-    ImageTurn,
+    IsWin,
+    hirepoppc,
+    ShowPop,
     XapXep,
     clickSort,
     clickHistory,
@@ -28,6 +31,9 @@ const Board = props => {
   } = props;
   const handleBack = ()=>{
     history.push('/');
+  }
+  const HandleClose = ()=>{
+    hirepoppc()
   }
   if (JSON.parse(localStorage.getItem('token')) === null) {
     history.push('/login');
@@ -167,6 +173,28 @@ const Board = props => {
           </div>
         </div>
       </div>
+      
+      <Modal show={ShowPop}>
+        <Modal.Header closeButton>
+        <Modal.Title variant="success" >FINISH</Modal.Title>
+        
+          
+        </Modal.Header>
+        {IsWin ?(
+        <Modal.Body>
+            <Image src={process.env.PUBLIC_URL + '/trophy.png'}  roundedCircle />
+            </Modal.Body>
+          ):(
+            <Modal.Body>
+             YOU LOSE
+            </Modal.Body>
+          )}
+        <Modal.Footer>
+          <Button variant="secondary" onClick={HandleClose} >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
@@ -181,7 +209,9 @@ const mapSateToProps = state => {
     ImageTurn: state.game.ImageTurn,
     Player: state.game.Player,
     XapXep: state.game.XapXep,
-    user: state.user
+    user: state.user,
+    IsWin:state.game.IsWin,
+    ShowPop:state.game. ShowPop
   };
 };
 const mapDispathToProps = dispatch => {
@@ -190,7 +220,9 @@ const mapDispathToProps = dispatch => {
     handleClick: id => dispatch(actionTypes.handleClick(id)),
     clickRestart: () => dispatch(actionTypes.clickreset()),
     clickSort: value => dispatch(actionTypes.clicksort(value)),
-    clickUndo: value => dispatch(actionTypes.clickUndo(value))
+    clickUndo: value => dispatch(actionTypes.clickUndo(value)),
+    hirepoppc: () => dispatch(actionTypes.hirepoppc()),
+    
   };
 };
 
@@ -198,127 +230,4 @@ export default connect(
   mapSateToProps,
   mapDispathToProps
 )(Board);
-/*
-import { connect } from 'react-redux';
-import React from 'react';
-import './Board.css';
-import Square from '../../components/square/Square';
-import * as actionTypes from '../../store/actions/actions';
 
-class Board extends React.Component {
- 
-  render() {
-    const { squares, ChooseHistory } = this.props;
-    const matrixSize = 20;
-    const rows = Array(matrixSize).fill(null); 
-    const cols = rows;
-    const board = rows.map((row,i) => {
-      const squares1 = cols.map((col,j) => {
-        const squareKey = i * matrixSize + j;
-        const Check1 = 'squareCheck';
-        const NonCheck = 'square';
-        const value = ChooseHistory.slice().find(element => {
-          return element === squareKey;
-        });
-        if (typeof value !== 'undefined') {
-          return (
-            <Square
-              ClassSquare={Check1}
-              keyInx={squareKey}
-              value={squares[squareKey]}
-              click={() => this.props.handleClick(squareKey)}
-            />
-          );
-        }
-        return (
-          <Square
-            ClassSquare={NonCheck}
-            keyInx={squareKey}
-            value={squares[squareKey]}
-            click={() => this.props.handleClick(squareKey)}
-          />
-        );
-      });
-      return (
-        <div className="board-row" key={i}>
-          {squares1}
-        </div>
-      );
-    });
-    return (
-      <div className="container">
-        <h1 className="d-flex justify-content-center m-4">GAME CARO</h1>
-
-        <div className="ContainerGame ">
-          <div className="board">{board}</div>
-          <div className="bg-dark Menu text-white">
-            <div className="d-flex justify-content-center m-1 p-1">
-              <button
-                className="btn btn-danger"
-                onClick={this.props.clickRestart}>
-                New game
-              </button>
-            </div>
-            <div className="d-flex justify-content-center p-2">
-              <h3 className=" mr-2 p-1">Player</h3>
-            </div>
-            <div className="d-flex justify-content-center p-2">
-              <img src={this.props.ImageTurn} alt="xxx" />
-            </div>
-            <div className="d-flex justify-content-between">
-              <h4 className="m-1 ">Lịch sử đánh</h4>
-              <select defaultValue={this.props.XapXep} onChange={(e) => this.props.clickSort(e.target.value)}>
-                <option value="tangdan" selected>
-                  Tăng dần
-                </option>
-                <option value="giamdan">Giảm dần</option>
-              </select>
-            </div>
-
-            <div className="History">
-              <div className="list-group m-1">
-                {(this.props.ListHistory || []).map(item => (
-                  <button
-                    className={item.classname}
-                    onClick={() => this.props.clickHistory(item.ViTri)}
-                    key={item.ViTri}>
-                    #{item.LuotDanh} Player {item.player} [
-                    {parseInt(item.ViTri / 20) + 1},
-                    {item.ViTri - parseInt(item.ViTri / 20) * 20 + 1}]
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
-
-const mapSateToProps = state => {
-  return {
-    squares: state.game.squares,
-    IsFinish: state.game.IsFinish,
-    ListHistory: state.game.ListHistory,
-    LuotDanh: state.game.LuotDanh,
-    ChooseHistory: state.game.ChooseHistory,
-    ImageTurn: state.game.ImageTurn,
-    Player: state.game.Player,
-    XapXep: state.game.XapXep
-  };
-};
-const mapDispathToProps = dispatch =>{
-  return {
-    clickHistory: (value) => dispatch(actionTypes.clickHistory(value)),
-    handleClick:(id) => dispatch (actionTypes.handleClick(id)),
-    clickRestart:() => dispatch(actionTypes.clickreset()),
-    clickSort:(value) =>dispatch(actionTypes.clicksort(value)),
-  };
-};
-
-export default connect(mapSateToProps,mapDispathToProps)(Board);
-
-
-
-*/

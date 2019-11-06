@@ -8,7 +8,7 @@ import React, { useReducer } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login';
+
 
 import * as actionTypes from '../store/actions/actions';
 import * as alert from '../store/actions/alert_action';

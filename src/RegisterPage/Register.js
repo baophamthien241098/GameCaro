@@ -37,7 +37,8 @@ const Register = props => {
           firtname:firstname.value,
           lastname: lastname.value,
           username:username.value,
-          userpassword:userpassword.value
+          userpassword:userpassword.value,
+          urlimage:"https://res.cloudinary.com/thienbao/image/upload/v1572841878/ctgd2kyinlhsd4swzmlw.png",
         })
         if(check){
           history.push("/Login")

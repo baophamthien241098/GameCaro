@@ -5,7 +5,8 @@
 /* eslint-disable prefer-destructuring */
 import React,{useReducer} from 'react';
 import { useHistory } from 'react-router-dom';
-
+import axios from 'axios';
+import { async } from 'q';
 
 
 const Edit = props => {
@@ -44,7 +45,7 @@ const Edit = props => {
  }
   
   const submitform = async  () =>{
-
+ 
       const updateuser = await handleUpdate({
         id:user.id,
         firtname:userinput.firtname,
@@ -53,9 +54,8 @@ const Edit = props => {
         urlimage:userinput.image,
         userpassword:user.userpassword
       })
-    
-    
-   
+      console.log(updateuser);
+
   }
   const pStyle = {
     width: "500px",
@@ -98,8 +98,8 @@ const Edit = props => {
   };
 
   return (
-    <div className="row jumbotron">
-      <div className="col-md-6">
+    <div className=" jumbotron container d-flex justify-content-center">
+      <div className="col-md-4">
         <img style={pStyle} className="img-thumbnail" name="image" src={userinput.image } alt="Error"
         />
         <div className="input-group mt-1">
@@ -123,8 +123,8 @@ const Edit = props => {
           </div>
         </div>
       </div>
-      <div className="col-md-6">
-        <form  onSubmit={submitform}>
+      <div className="col-md-4">
+        <form encType="multipart/form-data"  onSubmit={submitform}>
           <div className="form-group">
             <label htmlFor="exampleInputEmail1">UserName</label>
             <input

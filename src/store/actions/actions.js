@@ -34,10 +34,37 @@ export const HANDLE_UNOPLAYER = 'HANDLE_UNOPLAYER';
 export const SURRENDER = 'SURRENDER';
 export const XINHOA = 'XINHOA';
 export const HANDLEXINHOA = 'HANDLEXINHOA';
+export const DISCONNECT = 'DISCONNECT';
+export const RESETSTATE = 'RESETSTATE';
+export const RECONECT = 'RECONECT';
+export const HIRE_POPMENUPC = 'HIRE_POPMENUPC';
+export const RESET_SOCKET = 'RESET_SOCkET';
 
+export const resetsocket = () => {
+  return { type: RESET_SOCKET
+      };
+}
 export const surrender = (value) => {
   return { type: SURRENDER,
             val:value
+      };
+}
+export const hirepoppc = () => {
+  return { type: HIRE_POPMENUPC
+      };
+}
+export const reconnect = (value) => {
+  return { type: RECONECT,
+            val:value
+      };
+}
+export const resetstate = () => {
+  return { type: RESETSTATE
+      };
+}
+export const disconnect = (value) => {
+  return { type: DISCONNECT,
+    val:value
       };
 }
 export const handleHoa = (value) => {
@@ -145,6 +172,7 @@ export const Login = (value) =>{
       })
       .then(data =>{
         localStorage.setItem('token', JSON.stringify(data.token));
+        dispatch(alerAction.error(""));
         dispatch(UserToken(value))
         return true
       })
@@ -213,6 +241,7 @@ export const clickUndoPlayer = ()=>{
 
   }
 }
+//https://server-game-caro.herokuapp.com
 export const UpdateData = (value)=>{
   return dispatch =>{
       return fetch("http://localhost:8080/user/update",{
@@ -223,21 +252,14 @@ export const UpdateData = (value)=>{
         body:JSON.stringify(value)
       })
       .then(res =>{
-        if(!res.ok){
-          throw Error(res.statusText);
-        }
+        
         return res.json()
       })
       .then(data =>{
           console.log(data);
-          return true
-          
+          return true  
       })
-      .catch(err=>{
-        console.log(err);
-        return false
-        
-      })
+     
   }
 }
 

@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
 /* eslint-disable prefer-template */
 /* eslint-disable radix */
+
 import Toe from '../../toe.png';
 import Tich from '../../tic.png';
+
 import * as actionTypes from '../actions/actions'
 
 
@@ -24,6 +26,7 @@ const initialState = {
   IsUndo:false,
   XinHoa:false,
   DaHoa:false,
+  Disconnect:false,
 };
 function CheckCheoTrai(squares, value, idx) {
     const arr = [];
@@ -274,6 +277,65 @@ function Checked(id, arr) {
 const reducer = (state = initialState, action) => {
   
   switch (action.type) {
+    case actionTypes.RECONECT:{
+      const {squares} = state
+      const newSq = squares.slice()
+      action.val.ListHistory.forEach(item=>{
+        newSq[item.ViTri] = item.Player
+      })
+      return {
+        ... state,
+        squares: newSq,
+        IsFinish:  action.val.IsFinish,
+        YourTurn:action.val.YourTurn,
+        ListHistory: action.val.ListHistory,
+        IsWin:action.val.IsWin,
+        ImageTurn: action.val.ImageTurn,
+        ChooseHistory:action.val.ChooseHistory,
+        XapXep: action.val.XapXep,
+        ChatMessages:action.val.ChatMessages,
+        message:action.val.message,
+        popMenu:action.val.popMenu,
+        IsUndo:action.val.IsUndo,
+        XinHoa:action.val.XinHoa,
+        DaHoa:action.val.DaHoa,
+        Disconnect:action.val.Disconnect,
+        LuotDanh:action.val.LuotDanh
+      }
+    }
+    case actionTypes.RESETSTATE:{
+      return {
+        squares: Array(400).fill(null),
+        IsFinish: false,
+        YourTurn:true,
+        ListHistory: [],
+        LuotDanh: 0,
+        IsWin:false,
+        ImageTurn: Tich,
+        ChooseHistory:[],
+        Player: 'X',
+        XapXep: 'tangdan',
+        ChatMessages:[],
+        message:'',
+        popMenu:false,
+        IsUndo:false,
+        XinHoa:false,
+        DaHoa:false,
+        Disconnect:false,
+      }
+    }
+    case actionTypes.DISCONNECT:{
+      if(action.val ===true){
+        return {
+          ...state,
+          Disconnect:true,
+        }
+      }
+      return {
+        ...state,
+        Disconnect:false,
+      }
+    }
     case actionTypes.HANDLEXINHOA:{
       if(action.val === true){
         return {
@@ -287,6 +349,7 @@ const reducer = (state = initialState, action) => {
       return {
         ... state,
         XinHoa:false,
+        DaHoa:false,
       }
     
     }
@@ -504,9 +567,10 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.HANDLE_UNOPLAYER:{
       
-      const { ListHistory } = state;
+      const { ListHistory,LuotDanh } = state;
 
       const historyL  = ListHistory.slice()
+       
       const temp = historyL.pop()
           if( typeof temp !== "undefined"){
             if(temp.Player === "X"){
@@ -522,6 +586,7 @@ const reducer = (state = initialState, action) => {
               ListHistory:historyL,
               squares:squareNew,
               YourTurn:true,
+              LuotDanh:LuotDanh-1,
             }
           }
       }
